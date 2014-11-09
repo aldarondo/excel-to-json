@@ -419,6 +419,14 @@ module.exports = function (grunt) {
       }
     },
 
+    phpunit: {
+      options: {
+        bin: '<%= yeoman.app %>/api/vendor/bin/phpunit.bat',
+        bootstrap: '<%= yeoman.app %>/api/tests/bootstrap.php',
+        configuration: '<%= yeoman.app %>/api/phpunit.xml'
+      }
+    },
+
     // Test settings
     karma: {
       unit: {
@@ -428,6 +436,7 @@ module.exports = function (grunt) {
     }
   });
 
+  grunt.loadNpmTasks('grunt-phpunit');
 
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
     if (target === 'dist') {
@@ -449,11 +458,6 @@ module.exports = function (grunt) {
       'connect:livereload',
       'watch'
     ]);
-  });
-
-  grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function (target) {
-    grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
-    grunt.task.run(['serve:' + target]);
   });
 
   grunt.registerTask('test', [
@@ -485,7 +489,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', [
     'newer:jshint',
-    'test',
     'build'
   ]);
 };
