@@ -83,10 +83,6 @@ module.exports = function (grunt) {
           '.tmp/styles/{,*/}*.css',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
-      },
-      phpTest: {
-        files: ['<%= yeoman.app %>/api/{,{config,src,tests}/**/}/*'],
-        tasks: ['shell:phpTest']
       }
     },
 
@@ -405,25 +401,20 @@ module.exports = function (grunt) {
       ]
     },
 
-    shell: {
-      options: {
-        stdout: true,
-        stderr: true,
-        failOnError: true
-      },
-      phpTest: {
-        command: 'make --directory <%= yeoman.app %>/api test'
-      },
-      phpUpdate: {
-        command: 'make --directory <%= yeoman.app %>/api update'
-      }
-    },
-
     phpunit: {
       options: {
         bin: '<%= yeoman.app %>/api/vendor/bin/phpunit.bat',
         bootstrap: '<%= yeoman.app %>/api/tests/bootstrap.php',
         configuration: '<%= yeoman.app %>/api/phpunit.xml'
+      }
+    },
+
+    phpcs: {
+      application: {
+        dir: ['<%= yeoman.app %>/api/config/**/*.php', '<%= yeoman.app %>/api/src/**/*.php','<%= yeoman.app %>/api/tests/**/*.php' ]
+      },
+      options: {
+        bin: '<%= yeoman.app %>/api/vendor/bin/phpcs.bat'
       }
     },
 
@@ -437,6 +428,7 @@ module.exports = function (grunt) {
   });
 
   grunt.loadNpmTasks('grunt-phpunit');
+  grunt.loadNpmTasks('grunt-phpcs');
 
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
     if (target === 'dist') {
@@ -462,7 +454,8 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', [
     'clean:server',
-    'shell:phpTest',
+    'phpunit',
+    'phpcs',
     'concurrent:test',
     'autoprefixer',
     'connect:test',
@@ -471,7 +464,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
-    'shell:phpUpdate',
     'wiredep',
     'useminPrepare',
     'concurrent:dist',
